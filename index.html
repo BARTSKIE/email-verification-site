@@ -45,15 +45,18 @@
   async function verifyEmail() {
     const statusEl = document.getElementById("status");
 
-    // Get token from URL hash: #/verify/<token>
-    const hashParts = window.location.hash.split("/");
-    const token = hashParts[hashParts.length - 1];
-
-    if (!token || hashParts[1] !== "verify") {
-      statusEl.textContent = "Invalid verification link.";
+    // Extract token from URL hash (e.g. #/verify/<token>)
+    const hash = window.location.hash;
+    const parts = hash.split("/");
+    
+    // Check if it's a valid route
+    if (parts[1] !== "verify" || !parts[2]) {
+      statusEl.textContent = "❌ Route not found or token missing.";
       statusEl.className = "error";
       return;
     }
+
+    const token = parts[2];
 
     try {
       const response = await fetch(`https://bartskie-rcj-backend.onrender.com/api/verify/${token}`);
@@ -72,7 +75,9 @@
     }
   }
 
-  verifyEmail();
+  // Wait for page to load before running the verification
+  window.addEventListener("load", verifyEmail);
 </script>
+
 </body>
 </html>
