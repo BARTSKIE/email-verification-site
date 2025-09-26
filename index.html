@@ -42,38 +42,37 @@
   </div>
 
   <script>
-    async function verifyEmail() {
-      const statusEl = document.getElementById("status");
+  async function verifyEmail() {
+    const statusEl = document.getElementById("status");
 
-      // Get token from URL: https://yoursite.com/verify/<token>
-      const pathParts = window.location.pathname.split("/");
-      const token = pathParts[pathParts.length - 1];
+    // Get token from URL hash: #/verify/<token>
+    const hashParts = window.location.hash.split("/");
+    const token = hashParts[hashParts.length - 1];
 
-      if (!token) {
-        statusEl.textContent = "Invalid verification link.";
-        statusEl.className = "error";
-        return;
-      }
-
-      try {
-        // Replace with your backend verification API endpoint
-        const response = await fetch(`https://your-backend.com/api/verify/${token}`);
-        const result = await response.json();
-
-        if (response.ok) {
-          statusEl.textContent = "✅ Your email has been successfully verified!";
-          statusEl.className = "success";
-        } else {
-          statusEl.textContent = result.message || "❌ Verification failed.";
-          statusEl.className = "error";
-        }
-      } catch (err) {
-        statusEl.textContent = "⚠️ Network error. Please try again later.";
-        statusEl.className = "error";
-      }
+    if (!token || hashParts[1] !== "verify") {
+      statusEl.textContent = "Invalid verification link.";
+      statusEl.className = "error";
+      return;
     }
 
-    verifyEmail();
-  </script>
+    try {
+      const response = await fetch(`https://bartskie-rcj-backend.onrender.com/api/verify/${token}`);
+      const result = await response.json();
+
+      if (response.ok) {
+        statusEl.textContent = "✅ Your email has been successfully verified!";
+        statusEl.className = "success";
+      } else {
+        statusEl.textContent = result.message || "❌ Verification failed.";
+        statusEl.className = "error";
+      }
+    } catch (err) {
+      statusEl.textContent = "⚠️ Network error. Please try again later.";
+      statusEl.className = "error";
+    }
+  }
+
+  verifyEmail();
+</script>
 </body>
 </html>
